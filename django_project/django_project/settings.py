@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import cx_Oracle
+from keycloak_oidc.default_settings import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,7 +26,7 @@ SECRET_KEY = '$u2u*ltpk8!9l4mdklz5ltbabt9vn!k6qg09)q932e@^^h)64q'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -34,12 +34,11 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',
+    'django.contrib.contenttypes',
+    'keycloak_oidc',
     'django.contrib.staticfiles',
     'blog.apps.BlogConfig',
-    'users.apps.UsersConfig',
     'crispy_forms',
 ]
 
@@ -49,9 +48,25 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'mozilla_django_oidc.middleware.SessionRefresh',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'keycloak_oidc.auth.OIDCAuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend'
+]
+
+OIDC_RP_CLIENT_ID = 'webapp'
+OIDC_RP_CLIENT_SECRET = 'e42ed2da-286e-4864-8b85-c5eba2d7001a'
+
+OIDC_OP_AUTHORIZATION_ENDPOINT = 'http://localhost:8080/auth/realms/CS6301/protocol/openid-connect/auth'
+OIDC_OP_TOKEN_ENDPOINT = 'http://localhost:8080/auth/realms/CS6301/protocol/openid-connect/token'
+OIDC_OP_USER_ENDPOINT = 'http://localhost:8080/auth/realms/CS6301/protocol/openid-connect/userinfo'
+OIDC_OP_JWKS_ENDPOINT = 'http://localhost:8080/auth/realms/CS6301/protocol/openid-connect/certs'
+OIDC_OP_LOGOUT_ENDPOINT = 'http://localhost:8080/auth/realms/CS6301/protocol/openid-connect/logout'
+
 
 ROOT_URLCONF = 'django_project.urls'
 
@@ -84,38 +99,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-'''
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.oracle',
-        'NAME': 'orcl',
-        'USER': 'system',
-        'PASSWORD': 'oracle',
-        'HOST': 'localhost',
-        'PORT': '1521',
-    }
-}
-'''
-
-
-# Password validation
-# https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -140,6 +123,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
 CRISPY_TEMPLATE_PACK='bootstrap4'
 
-LOGIN_REDIRECT_URL = 'blog-home'
-
-LOGIN_URL = 'login'

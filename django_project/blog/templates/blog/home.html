@@ -10,7 +10,7 @@
               <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
             </div>
             <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
-            <p class="article-content">{{ post.content }}</p>
+            <p class="article-content">{{ post.content|striptags }}</p>
           </div>
         </article>
     {% endfor %}
@@ -23,7 +23,7 @@
               <small class="text-muted">{{ post.published }}</small>
             </div>
             <h2><a class="article-title" href= "{{ post.link }}" > {{ post.title }}</a></h2>
-            <p class="article-content">{{ post.description }}</p>
+            <p class="article-content">{{ post.description|striptags }}</p>
           </div>
         </article>
     {% endfor %}

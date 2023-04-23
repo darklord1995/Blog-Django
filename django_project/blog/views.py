@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from .models import Post
 import feedparser
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def home(request):
     """
         Feeds which are to be displayed are extracted from techcrunch.
@@ -18,7 +20,7 @@ def home(request):
 
     return render(request, 'blog/home.html', context)
 
-
+@login_required
 def about(request):
     """
         Renders about page template when this api is called
